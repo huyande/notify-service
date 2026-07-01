@@ -3,6 +3,16 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
+  // 打印数据库连接信息
+  console.log('=== 数据库连接配置 ===');
+  console.log(`Host: ${process.env.DB_HOST ?? 'localhost'}`);
+  console.log(`Port: ${process.env.DB_PORT ?? '3306'}`);
+  console.log(`Username: ${process.env.DB_USERNAME ?? 'root'}`);
+  console.log(`Password: ${process.env.DB_PASSWORD ? '***' : '(空)'}`);
+  console.log(`Database: ${process.env.DB_DATABASE ?? 'wx_nest'}`);
+  console.log(`Synchronize: ${process.env.DB_SYNCHRONIZE === 'true' ? '是' : '否'}`);
+  console.log('========================');
+
   const app = await NestFactory.create(AppModule);
 
   // Swagger 配置
