@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
-import { ChildAccount } from '../../child/entities/child-account.entity';
-import { ClassChangeLog } from '../../lesson-log/entities/class-change-log.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { ChildAccount } from '@/modules/child/entities/child-account.entity';
+import { ClassChangeLog } from '@/modules/lesson-log/entities/class-change-log.entity';
 import { CourseTimeRule } from './course-time-rule.entity';
 
 @Entity('course_package')

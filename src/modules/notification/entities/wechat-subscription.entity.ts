@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
-import { FamilyMember } from '../../family/entities/family-member.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { FamilyMember } from '@/modules/family/entities/family-member.entity';
 
 @Entity('wechat_subscription')
 export class WechatSubscription extends BaseEntity {

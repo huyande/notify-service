@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
-import { CoursePackage } from '../../course/entities/course-package.entity';
-import { FamilyMember } from '../../family/entities/family-member.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { CoursePackage } from '@/modules/course/entities/course-package.entity';
+import { FamilyMember } from '@/modules/family/entities/family-member.entity';
 import { ActionType } from '../enums/action-type.enum';
 
 @Entity('class_change_log')

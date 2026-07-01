@@ -6,9 +6,9 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
-import { ClassChangeLog } from '../../lesson-log/entities/class-change-log.entity';
-import { WechatSubscription } from '../../notification/entities/wechat-subscription.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { ClassChangeLog } from '@/modules/lesson-log/entities/class-change-log.entity';
+import { WechatSubscription } from '@/modules/notification/entities/wechat-subscription.entity';
 import { MemberRole } from '../enums/member-role.enum';
 import { FamilyGroup } from './family-group.entity';
 

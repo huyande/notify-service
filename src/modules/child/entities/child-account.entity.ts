@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
-import { CoursePackage } from '../../course/entities/course-package.entity';
-import { FamilyGroup } from '../../family/entities/family-group.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { CoursePackage } from '@/modules/course/entities/course-package.entity';
+import { FamilyGroup } from '@/modules/family/entities/family-group.entity';
 
 @Entity('child_account')
 export class ChildAccount extends BaseEntity {
