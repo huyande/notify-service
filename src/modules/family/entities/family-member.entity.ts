@@ -37,10 +37,10 @@ export class FamilyMember extends BaseEntity {
   joinTime: Date;
 
   @Column({ name: 'refresh_token', length: 512, nullable: true })
-  refreshToken: string;
+  refreshToken: string | null;
 
   @Column({ name: 'token_expires_at', type: 'datetime', nullable: true })
-  tokenExpiresAt: Date;
+  tokenExpiresAt: Date | null;
 
   @ManyToOne(() => FamilyGroup, (group) => group.members)
   @JoinColumn({ name: 'group_id' })

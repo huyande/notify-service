@@ -90,15 +90,15 @@ export class AuthService {
 
   private async generateAccessToken(member: FamilyMember): Promise<string> {
     const payload = { sub: member.id, openId: member.openId };
-    const expiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRATION');
-    return this.jwtService.sign(payload, { expiresIn });
+    const expiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRATION') || '15m';
+    return this.jwtService.signAsync(payload, { expiresIn });
   }
 
   private async generateRefreshToken(member: FamilyMember): Promise<string> {
-    const payload = { sub: member.id, openId: member.openId, type: 'refresh' };
+    const payload = { sub: member.id, openId: member.openId, type: 'refresh' as const };
     const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
-    const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRATION');
-    return this.jwtService.sign(payload, { secret, expiresIn });
+    const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '7d';
+    return this.jwtService.signAsync(payload, { secret, expiresIn });
   }
 
   async refresh(refreshToken: string): Promise<LoginResponseDto> {
