@@ -102,8 +102,52 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<LoginResponseDto> {
-    // TODO: 实现刷新逻辑
-    throw new Error('Not implemented');
+    if (!refreshToken) {
+      throw new UnauthorizedException('缺少 refreshToken');
+    }
+
+    try {
+      // 验证 refreshToken
+      const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
+      const payload = this.jwtService.verify(refreshToken, { secret });
+
+      if (payload.type !== 'refresh') {
+        throw new UnauthorizedException('Token 类型无效');
+      }
+
+      // 查询用户
+      const member = await this.memberRepository.findOne({
+        where: { id: payload.sub },
+      });
+
+      if (!member) {
+        throw new UnauthorizedException('用户不存在');
+      }
+
+      // 验证数据库中的 refreshToken 是否匹配
+      if (member.refreshToken !== refreshToken) {
+        throw new UnauthorizedException('RefreshToken 无效');
+      }
+
+      // 生成新的 Token 对
+      const accessToken = await this.generateAccessToken(member);
+      const newRefreshToken = await this.generateRefreshToken(member);
+
+      const refreshExpirationDays = parseInt(
+        this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '7d',
+      );
+      const newTokenExpiresAt = new Date(
+        Date.now() + refreshExpirationDays * 24 * 60 * 60 * 1000,
+      );
+
+      member.refreshToken = newRefreshToken;
+      member.tokenExpiresAt = newTokenExpiresAt;
+      await this.memberRepository.save(member);
+
+      return { accessToken, refreshToken: newRefreshToken };
+    } catch (error) {
+      throw new UnauthorizedException('RefreshToken 验证失败');
+    }
   }
 
   async logout(memberId: string): Promise<void> {
