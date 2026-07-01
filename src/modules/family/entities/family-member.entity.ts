@@ -1,19 +1,21 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
 import { ClassChangeLog } from '@/modules/lesson-log/entities/class-change-log.entity';
 import { WechatSubscription } from '@/modules/notification/entities/wechat-subscription.entity';
 import { MemberRole } from '../enums/member-role.enum';
 import { FamilyGroup } from './family-group.entity';
 
 @Entity('family_member')
-export class FamilyMember extends BaseEntity {
+export class FamilyMember {
   @Index({ unique: true })
   @Column({ name: 'open_id', length: 64 })
   openId: string;
@@ -36,7 +38,7 @@ export class FamilyMember extends BaseEntity {
   @Column({ name: 'join_time', type: 'datetime' })
   joinTime: Date;
 
-  @Column({ name: 'refresh_token', length: 512, nullable: true })
+  @Column({ name: 'refresh_token', type: 'varchar', length: 512, nullable: true })
   refreshToken: string | null;
 
   @Column({ name: 'token_expires_at', type: 'datetime', nullable: true })
@@ -51,4 +53,13 @@ export class FamilyMember extends BaseEntity {
 
   @OneToMany(() => ClassChangeLog, (log) => log.operator)
   changeLogs: ClassChangeLog[];
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

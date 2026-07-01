@@ -1,11 +1,18 @@
-import { Column, Entity, Index, OneToMany } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ChildAccount } from '@/modules/child/entities/child-account.entity';
 import { MemberLevel } from '../enums/member-level.enum';
 import { FamilyMember } from './family-member.entity';
 
 @Entity('family_group')
-export class FamilyGroup extends BaseEntity {
+export class FamilyGroup {
   @Index({ unique: true })
   @Column({ name: 'group_code', length: 6 })
   groupCode: string;
@@ -25,4 +32,13 @@ export class FamilyGroup extends BaseEntity {
 
   @OneToMany(() => ChildAccount, (child) => child.group)
   children: ChildAccount[];
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

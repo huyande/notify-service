@@ -1,11 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { CoursePackage } from '@/modules/course/entities/course-package.entity';
 import { FamilyMember } from '@/modules/family/entities/family-member.entity';
 import { ActionType } from '../enums/action-type.enum';
 
 @Entity('class_change_log')
-export class ClassChangeLog extends BaseEntity {
+export class ClassChangeLog {
   @Column({ name: 'package_id', type: 'bigint' })
   packageId: string;
 
@@ -18,7 +25,7 @@ export class ClassChangeLog extends BaseEntity {
   @Column({ name: 'lesson_change', type: 'decimal', precision: 10, scale: 2 })
   lessonChange: string;
 
-  @Column({ name: 'reason', length: 255, nullable: true })
+  @Column({ name: 'reason', type: 'varchar', length: 255, nullable: true })
   reason: string | null;
 
   @Column({ name: 'occur_time', type: 'datetime' })
@@ -31,4 +38,13 @@ export class ClassChangeLog extends BaseEntity {
   @ManyToOne(() => FamilyMember, (member) => member.changeLogs)
   @JoinColumn({ name: 'operator_id' })
   operator: FamilyMember;
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

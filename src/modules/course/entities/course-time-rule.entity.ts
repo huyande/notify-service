@@ -1,10 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { TimeBranch } from '../enums/time-branch.enum';
 import { CoursePackage } from './course-package.entity';
 
 @Entity('course_time_rule')
-export class CourseTimeRule extends BaseEntity {
+export class CourseTimeRule {
   @Column({ name: 'package_id', type: 'bigint' })
   packageId: string;
 
@@ -26,4 +33,13 @@ export class CourseTimeRule extends BaseEntity {
   @ManyToOne(() => CoursePackage, (pkg) => pkg.timeRules)
   @JoinColumn({ name: 'package_id' })
   package: CoursePackage;
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

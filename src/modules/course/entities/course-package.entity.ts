@@ -1,11 +1,19 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ChildAccount } from '@/modules/child/entities/child-account.entity';
 import { ClassChangeLog } from '@/modules/lesson-log/entities/class-change-log.entity';
 import { CourseTimeRule } from './course-time-rule.entity';
 
 @Entity('course_package')
-export class CoursePackage extends BaseEntity {
+export class CoursePackage {
   @Column({ name: 'child_id', type: 'bigint' })
   childId: string;
 
@@ -36,7 +44,7 @@ export class CoursePackage extends BaseEntity {
   @Column({ name: 'card_color', length: 7 })
   cardColor: string;
 
-  @Column({ name: 'remind_rule', length: 64, nullable: true })
+  @Column({ name: 'remind_rule', type: 'varchar', length: 64, nullable: true })
   remindRule: string | null;
 
   @ManyToOne(() => ChildAccount, (child) => child.coursePackages)
@@ -48,4 +56,13 @@ export class CoursePackage extends BaseEntity {
 
   @OneToMany(() => ClassChangeLog, (log) => log.package)
   changeLogs: ClassChangeLog[];
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

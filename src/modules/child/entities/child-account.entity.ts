@@ -1,10 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '@/common/entities/base.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { CoursePackage } from '@/modules/course/entities/course-package.entity';
 import { FamilyGroup } from '@/modules/family/entities/family-group.entity';
 
 @Entity('child_account')
-export class ChildAccount extends BaseEntity {
+export class ChildAccount {
   @Column({ name: 'group_id', type: 'bigint' })
   groupId: string;
 
@@ -20,4 +28,13 @@ export class ChildAccount extends BaseEntity {
 
   @OneToMany(() => CoursePackage, (pkg) => pkg.child)
   coursePackages: CoursePackage[];
+
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
+  updatedAt: Date;
 }

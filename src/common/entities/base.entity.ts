@@ -1,16 +1,3 @@
-import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-
-export abstract class BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
-
-  @CreateDateColumn({ name: 'created_at', type: 'datetime' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
-  updatedAt: Date;
-}
+// 已废弃：不再使用基类，每个实体单独定义字段
+// 此文件保留仅为向后兼容，后续可删除
+export abstract class BaseEntity {}
