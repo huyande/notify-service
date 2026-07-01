@@ -1,19 +1,48 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  // 打印数据库连接信息
-  console.log('=== 数据库连接配置 ===');
-  console.log(`Host: ${process.env.DB_HOST ?? 'localhost'}`);
-  console.log(`Port: ${process.env.DB_PORT ?? '3306'}`);
-  console.log(`Username: ${process.env.DB_USERNAME ?? 'root'}`);
-  console.log(`Password: ${process.env.DB_PASSWORD ? '***' : '(空)'}`);
-  console.log(`Database: ${process.env.DB_DATABASE ?? 'wx_nest'}`);
-  console.log(`Synchronize: ${process.env.DB_SYNCHRONIZE === 'true' ? '是' : '否'}`);
-  console.log('========================');
+  // 从环境变量获取日志级别，默认 'log'
+  const logLevel = process.env.LOG_LEVEL ?? 'log';
 
-  const app = await NestFactory.create(AppModule);
+  // 根据 LOG_LEVEL 确定要启用的日志级别
+  const allLevels: ('log' | 'error' | 'warn' | 'debug' | 'verbose')[] = [
+    'log',
+    'error',
+    'warn',
+    'debug',
+    'verbose',
+  ];
+  const levelOrder: Record<string, number> = {
+    error: 0,
+    warn: 1,
+    log: 2,
+    debug: 3,
+    verbose: 4,
+  };
+
+  const enabledLevels = allLevels.filter(
+    (level) => levelOrder[level] <= levelOrder[logLevel],
+  );
+
+  const app = await NestFactory.create(AppModule, {
+    logger: enabledLevels,
+  });
+
+  const logger = new Logger('Bootstrap');
+
+  // 打印数据库连接信息
+  logger.log('=== 数据库连接配置 ===');
+  logger.log(`Host: ${process.env.DB_HOST ?? 'localhost'}`);
+  logger.log(`Port: ${process.env.DB_PORT ?? '3306'}`);
+  logger.log(`Username: ${process.env.DB_USERNAME ?? 'root'}`);
+  logger.log(`Password: ${process.env.DB_PASSWORD ?? '(空)'}`);
+  logger.log(`Database: ${process.env.DB_DATABASE ?? 'wx_nest'}`);
+  logger.log(`Synchronize: ${process.env.DB_SYNCHRONIZE === 'true' ? '是' : '否'}`);
+  logger.log(`日志级别: ${logLevel}`);
+  logger.log('========================');
 
   // Swagger 配置
   if (process.env.SWAGGER_ENABLED !== 'false') {
