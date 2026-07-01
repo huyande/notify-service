@@ -151,6 +151,14 @@ export class AuthService {
   }
 
   async logout(memberId: string): Promise<void> {
-    // TODO: 实现登出逻辑
+    const member = await this.memberRepository.findOne({
+      where: { id: memberId },
+    });
+
+    if (member) {
+      member.refreshToken = null;
+      member.tokenExpiresAt = null;
+      await this.memberRepository.save(member);
+    }
   }
 }
