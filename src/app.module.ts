@@ -7,10 +7,12 @@ import { CourseModule } from './modules/course/course.module';
 import { FamilyModule } from './modules/family/family.module';
 import { LessonLogModule } from './modules/lesson-log/lesson-log.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    AuthModule,
     FamilyModule,
     ChildModule,
     CourseModule,
