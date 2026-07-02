@@ -1,44 +1,30 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
-import type { PaginateQuery } from 'nestjs-paginate';
+import { Controller, Get, Patch, Body, Param, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FamilyService } from './services/family.service';
-import { CreateFamilyDto } from './dto/create-family.dto';
-import { UpdateFamilyDto } from './dto/update-family.dto';
+import { UpdateMyProfileDto } from './dto/update-profile.dto';
+import { FamilyMemberDto } from './dto/family-group.dto';
 
+@ApiTags('家庭')
+@ApiBearerAuth()
 @Controller('family')
 export class FamilyController {
   constructor(private readonly familyService: FamilyService) {}
 
-  @Post()
-  create(@Body() createFamilyDto: CreateFamilyDto) {
-    return this.familyService.createGroup(createFamilyDto);
+  @Patch('me/profile')
+  @ApiOperation({ summary: '更新当前用户的昵称和头像' })
+  updateMyProfile(
+    @Req() req: any,
+    @Body() dto: UpdateMyProfileDto,
+  ): Promise<FamilyMemberDto> {
+    return this.familyService.updateMyProfile(req.user.id, dto);
   }
 
-  @Get()
-  findAll(@Query() query: PaginateQuery) {
-    return this.familyService.findAllGroups(query);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.familyService.findGroupById(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFamilyDto: UpdateFamilyDto) {
-    return this.familyService.updateGroup(id, updateFamilyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.familyService.removeGroup(id);
+  @Get('groups/:groupId/members')
+  @ApiOperation({ summary: '获取家庭成员列表（仅本组成员可查）' })
+  getGroupMembers(
+    @Param('groupId') groupId: string,
+    @Req() req: any,
+  ): Promise<FamilyMemberDto[]> {
+    return this.familyService.getGroupMembers(groupId, req.user.id);
   }
 }

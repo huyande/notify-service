@@ -7,10 +7,7 @@ import { NotificationController } from './notification.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WechatSubscription])],
-  providers: [
-    WechatSubscriptionDao,
-    NotificationService,
-  ],
+  providers: [WechatSubscriptionDao, NotificationService],
   controllers: [NotificationController],
   exports: [NotificationService],
 })

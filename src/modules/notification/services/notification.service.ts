@@ -15,11 +15,15 @@ export class NotificationService {
     return this.toDto(entity as WechatSubscription);
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<WechatSubscriptionDto>> {
+  async findAll(
+    query: PaginateQuery,
+  ): Promise<Paginated<WechatSubscriptionDto>> {
     const result = await this.wechatSubscriptionDao.paginate(query);
     return {
       ...result,
-      data: result.data.map((entity) => this.toDto(entity as WechatSubscription)),
+      data: result.data.map((entity) =>
+        this.toDto(entity as WechatSubscription),
+      ),
     } as Paginated<WechatSubscriptionDto>;
   }
 
@@ -31,7 +35,10 @@ export class NotificationService {
     return this.toDto(entity as WechatSubscription);
   }
 
-  async update(id: string, dto: UpdateNotificationDto): Promise<WechatSubscriptionDto> {
+  async update(
+    id: string,
+    dto: UpdateNotificationDto,
+  ): Promise<WechatSubscriptionDto> {
     const entity = await this.wechatSubscriptionDao.update(id, dto);
     if (!entity) {
       throw new NotFoundException(`WechatSubscription ${id} not found`);

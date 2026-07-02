@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import type { Paginated, PaginateQuery } from 'nestjs-paginate';
 import { FamilyGroupDao } from '../dao/family-group.dao';
 import { FamilyMemberDao } from '../dao/family-member.dao';
 import { CreateFamilyDto } from '../dto/create-family.dto';
 import { UpdateFamilyDto } from '../dto/update-family.dto';
+import { UpdateMyProfileDto } from '../dto/update-profile.dto';
 import { FamilyGroupDto, FamilyMemberDto } from '../dto/family-group.dto';
 import { FamilyGroup } from '../entities/family-group.entity';
 import { FamilyMember } from '../entities/family-member.entity';
@@ -21,7 +26,9 @@ export class FamilyService {
     return this.toGroupDto(entity as FamilyGroup);
   }
 
-  async findAllGroups(query: PaginateQuery): Promise<Paginated<FamilyGroupDto>> {
+  async findAllGroups(
+    query: PaginateQuery,
+  ): Promise<Paginated<FamilyGroupDto>> {
     const result = await this.familyGroupDao.paginate(query);
     return {
       ...result,
@@ -79,12 +86,40 @@ export class FamilyService {
     return entity ? this.toMemberDto(entity) : null;
   }
 
-  async updateMember(id: string, dto: UpdateFamilyDto): Promise<FamilyMemberDto> {
+  async updateMember(
+    id: string,
+    dto: UpdateFamilyDto,
+  ): Promise<FamilyMemberDto> {
     const entity = await this.familyMemberDao.update(id, dto);
     if (!entity) {
       throw new NotFoundException(`FamilyMember ${id} not found`);
     }
     return this.toMemberDto(entity as FamilyMember);
+  }
+
+  // 更新当前登录用户的资料（memberId 来自 JWT，杜绝越权）
+  async updateMyProfile(
+    memberId: string,
+    dto: UpdateMyProfileDto,
+  ): Promise<FamilyMemberDto> {
+    const entity = await this.familyMemberDao.update(memberId, dto);
+    if (!entity) {
+      throw new NotFoundException(`FamilyMember ${memberId} not found`);
+    }
+    return this.toMemberDto(entity as FamilyMember);
+  }
+
+  // 获取家庭成员列表（仅本组成员可查）
+  async getGroupMembers(
+    groupId: string,
+    currentMemberId: string,
+  ): Promise<FamilyMemberDto[]> {
+    const current = await this.familyMemberDao.findOne(currentMemberId);
+    if (!current || current.groupId !== groupId) {
+      throw new ForbiddenException('无权查看该家庭成员列表');
+    }
+    const entities = await this.familyMemberDao.findByGroupId(groupId);
+    return entities.map((e) => this.toMemberDto(e as FamilyMember));
   }
 
   async removeMember(id: string): Promise<void> {

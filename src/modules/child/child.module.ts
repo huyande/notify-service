@@ -7,10 +7,7 @@ import { ChildController } from './child.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ChildAccount])],
-  providers: [
-    ChildAccountDao,
-    ChildService,
-  ],
+  providers: [ChildAccountDao, ChildService],
   controllers: [ChildController],
   exports: [ChildService],
 })

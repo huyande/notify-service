@@ -13,10 +13,8 @@ import { FamilyMember } from './family-member.entity';
 
 @Entity('family_group')
 export class FamilyGroup {
-
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
-
 
   @Index({ unique: true })
   @Column({ name: 'group_code', length: 6 })
@@ -38,7 +36,6 @@ export class FamilyGroup {
   @OneToMany(() => ChildAccount, (child) => child.group)
   children: ChildAccount[];
 
-  
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
 

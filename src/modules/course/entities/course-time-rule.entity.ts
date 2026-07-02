@@ -14,7 +14,7 @@ import { CoursePackage } from './course-package.entity';
 export class CourseTimeRule {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
-  
+
   @Column({ name: 'package_id', type: 'bigint' })
   packageId: string;
 
@@ -36,8 +36,6 @@ export class CourseTimeRule {
   @ManyToOne(() => CoursePackage, (pkg) => pkg.timeRules)
   @JoinColumn({ name: 'package_id' })
   package: CoursePackage;
-
-  
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

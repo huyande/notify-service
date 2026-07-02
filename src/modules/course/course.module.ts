@@ -9,11 +9,7 @@ import { CourseController } from './course.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CoursePackage, CourseTimeRule])],
-  providers: [
-    CoursePackageDao,
-    CourseTimeRuleDao,
-    CourseService,
-  ],
+  providers: [CoursePackageDao, CourseTimeRuleDao, CourseService],
   controllers: [CourseController],
   exports: [CourseService],
 })

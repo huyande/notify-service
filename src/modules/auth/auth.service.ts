@@ -65,14 +65,20 @@ export class AuthService {
   private async generateAccessToken(member: FamilyMemberDto): Promise<string> {
     const loginMember = this.toLoginMember(member);
     const payload = { member: loginMember };
-    const expiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRATION') || '15m';
+    const expiresIn =
+      this.configService.get<string>('JWT_ACCESS_EXPIRATION') || '15m';
     return this.jwtService.signAsync(payload, { expiresIn } as any);
   }
 
   private async generateRefreshToken(member: FamilyMemberDto): Promise<string> {
-    const payload = { sub: member.id, openId: member.openId, type: 'refresh' as const };
+    const payload = {
+      sub: member.id,
+      openId: member.openId,
+      type: 'refresh' as const,
+    };
     const secret = this.configService.get<string>('JWT_REFRESH_SECRET');
-    const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '7d';
+    const expiresIn =
+      this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '7d';
     return this.jwtService.signAsync(payload, { secret, expiresIn } as any);
   }
 
@@ -118,7 +124,11 @@ export class AuthService {
         newTokenExpiresAt,
       );
 
-      return { accessToken, refreshToken: newRefreshToken, member: this.toLoginMember(member) };
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+        member: this.toLoginMember(member),
+      };
     } catch (error) {
       throw new UnauthorizedException('RefreshToken 验证失败');
     }

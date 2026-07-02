@@ -31,7 +31,10 @@ export class LessonLogService {
     return this.toDto(entity as ClassChangeLog);
   }
 
-  async update(id: string, dto: UpdateLessonLogDto): Promise<ClassChangeLogDto> {
+  async update(
+    id: string,
+    dto: UpdateLessonLogDto,
+  ): Promise<ClassChangeLogDto> {
     const entity = await this.classChangeLogDao.update(id, dto);
     if (!entity) {
       throw new NotFoundException(`ClassChangeLog ${id} not found`);

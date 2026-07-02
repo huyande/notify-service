@@ -13,7 +13,7 @@ import { FamilyMember } from '@/modules/family/entities/family-member.entity';
 export class WechatSubscription {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
-  
+
   @Column({ name: 'member_id', type: 'bigint' })
   memberId: string;
 
@@ -26,8 +26,6 @@ export class WechatSubscription {
   @ManyToOne(() => FamilyMember, (member) => member.subscriptions)
   @JoinColumn({ name: 'member_id' })
   member: FamilyMember;
-
-  
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
