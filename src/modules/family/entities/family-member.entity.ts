@@ -16,6 +16,9 @@ import { FamilyGroup } from './family-group.entity';
 
 @Entity('family_member')
 export class FamilyMember {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+  
   @Index({ unique: true })
   @Column({ name: 'open_id', length: 64 })
   openId: string;
@@ -54,8 +57,6 @@ export class FamilyMember {
   @OneToMany(() => ClassChangeLog, (log) => log.operator)
   changeLogs: ClassChangeLog[];
 
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

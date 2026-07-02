@@ -13,6 +13,9 @@ import { ActionType } from '../enums/action-type.enum';
 
 @Entity('class_change_log')
 export class ClassChangeLog {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+
   @Column({ name: 'package_id', type: 'bigint' })
   packageId: string;
 
@@ -38,9 +41,6 @@ export class ClassChangeLog {
   @ManyToOne(() => FamilyMember, (member) => member.changeLogs)
   @JoinColumn({ name: 'operator_id' })
   operator: FamilyMember;
-
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
