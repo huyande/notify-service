@@ -6,8 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { LessonLogService } from './lesson-log.service';
+import type { PaginateQuery } from 'nestjs-paginate';
+import { LessonLogService } from './services/lesson-log.service';
 import { CreateLessonLogDto } from './dto/create-lesson-log.dto';
 import { UpdateLessonLogDto } from './dto/update-lesson-log.dto';
 
@@ -21,13 +23,13 @@ export class LessonLogController {
   }
 
   @Get()
-  findAll() {
-    return this.lessonLogService.findAll();
+  findAll(@Query() query: PaginateQuery) {
+    return this.lessonLogService.findAll(query);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.lessonLogService.findOne(+id);
+    return this.lessonLogService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +37,11 @@ export class LessonLogController {
     @Param('id') id: string,
     @Body() updateLessonLogDto: UpdateLessonLogDto,
   ) {
-    return this.lessonLogService.update(+id, updateLessonLogDto);
+    return this.lessonLogService.update(id, updateLessonLogDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.lessonLogService.remove(+id);
+    return this.lessonLogService.remove(id);
   }
 }
