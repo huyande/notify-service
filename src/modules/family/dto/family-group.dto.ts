@@ -11,12 +11,14 @@ export class FamilyGroupDto {
 
 export class FamilyMemberDto {
   id: string;
-  groupId: string;
+  groupId: string | null;
   openId: string;
   nickname: string;
   avatarUrl: string;
   role: number;
   joinTime: Date;
+  refreshToken: string | null;
+  tokenExpiresAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

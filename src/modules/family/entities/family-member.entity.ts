@@ -23,8 +23,8 @@ export class FamilyMember {
   @Column({ name: 'open_id', length: 64 })
   openId: string;
 
-  @Column({ name: 'group_id', type: 'bigint' })
-  groupId: string;
+  @Column({ name: 'group_id', type: 'bigint', nullable: true })
+  groupId: string | null;
 
   @Column({ name: 'role', type: 'tinyint' })
   role: MemberRole;

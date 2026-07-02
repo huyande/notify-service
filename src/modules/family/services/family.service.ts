@@ -74,6 +74,11 @@ export class FamilyService {
     return this.toMemberDto(entity as FamilyMember);
   }
 
+  async findMemberByOpenId(openId: string): Promise<FamilyMemberDto | null> {
+    const entity = await this.familyMemberDao.findByOpenId(openId);
+    return entity ? this.toMemberDto(entity) : null;
+  }
+
   async updateMember(id: string, dto: UpdateFamilyDto): Promise<FamilyMemberDto> {
     const entity = await this.familyMemberDao.update(id, dto);
     if (!entity) {
@@ -88,6 +93,28 @@ export class FamilyService {
       throw new NotFoundException(`FamilyMember ${id} not found`);
     }
     await this.familyMemberDao.delete(id);
+  }
+
+  // Token 相关操作
+  async updateMemberToken(
+    id: string,
+    refreshToken: string,
+    tokenExpiresAt: Date,
+  ): Promise<void> {
+    await this.familyMemberDao.update(id, { refreshToken, tokenExpiresAt });
+  }
+
+  async clearMemberToken(id: string): Promise<void> {
+    await this.familyMemberDao.update(id, {
+      refreshToken: null,
+      tokenExpiresAt: null,
+    });
+  }
+
+  // 通过 openId 创建 member（仅 openId）
+  async createMemberByOpenId(openId: string): Promise<FamilyMemberDto> {
+    const entity = await this.familyMemberDao.create({ openId });
+    return this.toMemberDto(entity as FamilyMember);
   }
 
   private toGroupDto(entity: FamilyGroup): FamilyGroupDto {
@@ -110,6 +137,8 @@ export class FamilyService {
       avatarUrl: entity.avatarUrl,
       role: entity.role,
       joinTime: entity.joinTime,
+      refreshToken: entity.refreshToken,
+      tokenExpiresAt: entity.tokenExpiresAt,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
