@@ -16,12 +16,15 @@ import { FamilyGroup } from './family-group.entity';
 
 @Entity('family_member')
 export class FamilyMember {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+  
   @Index({ unique: true })
   @Column({ name: 'open_id', length: 64 })
   openId: string;
 
-  @Column({ name: 'group_id', type: 'bigint' })
-  groupId: string;
+  @Column({ name: 'group_id', type: 'bigint', nullable: true })
+  groupId: string | null;
 
   @Column({ name: 'role', type: 'tinyint' })
   role: MemberRole;
@@ -54,8 +57,6 @@ export class FamilyMember {
   @OneToMany(() => ClassChangeLog, (log) => log.operator)
   changeLogs: ClassChangeLog[];
 
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

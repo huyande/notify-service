@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { ChildService } from './child.service';
+import type { PaginateQuery } from 'nestjs-paginate';
+import { ChildService } from './services/child.service';
 import { CreateChildDto } from './dto/create-child.dto';
 import { UpdateChildDto } from './dto/update-child.dto';
+import { ChildDto } from './dto/child.dto';
 
 @Controller('child')
 export class ChildController {
@@ -21,22 +24,22 @@ export class ChildController {
   }
 
   @Get()
-  findAll() {
-    return this.childService.findAll();
+  findAll(@Query() query: PaginateQuery) {
+    return this.childService.findAll(query);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.childService.findOne(+id);
+    return this.childService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto) {
-    return this.childService.update(+id, updateChildDto);
+    return this.childService.update(id, updateChildDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.childService.remove(+id);
+    return this.childService.remove(id);
   }
 }

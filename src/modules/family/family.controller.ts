@@ -6,8 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { FamilyService } from './family.service';
+import type { PaginateQuery } from 'nestjs-paginate';
+import { FamilyService } from './services/family.service';
 import { CreateFamilyDto } from './dto/create-family.dto';
 import { UpdateFamilyDto } from './dto/update-family.dto';
 
@@ -17,26 +19,26 @@ export class FamilyController {
 
   @Post()
   create(@Body() createFamilyDto: CreateFamilyDto) {
-    return this.familyService.create(createFamilyDto);
+    return this.familyService.createGroup(createFamilyDto);
   }
 
   @Get()
-  findAll() {
-    return this.familyService.findAll();
+  findAll(@Query() query: PaginateQuery) {
+    return this.familyService.findAllGroups(query);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.familyService.findOne(+id);
+    return this.familyService.findGroupById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateFamilyDto: UpdateFamilyDto) {
-    return this.familyService.update(+id, updateFamilyDto);
+    return this.familyService.updateGroup(id, updateFamilyDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.familyService.remove(+id);
+    return this.familyService.removeGroup(id);
   }
 }

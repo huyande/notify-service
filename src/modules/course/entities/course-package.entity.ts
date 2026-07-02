@@ -14,6 +14,9 @@ import { CourseTimeRule } from './course-time-rule.entity';
 
 @Entity('course_package')
 export class CoursePackage {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+  
   @Column({ name: 'child_id', type: 'bigint' })
   childId: string;
 
@@ -57,8 +60,7 @@ export class CoursePackage {
   @OneToMany(() => ClassChangeLog, (log) => log.package)
   changeLogs: ClassChangeLog[];
 
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
+  
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

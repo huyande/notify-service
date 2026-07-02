@@ -12,6 +12,9 @@ import { CoursePackage } from './course-package.entity';
 
 @Entity('course_time_rule')
 export class CourseTimeRule {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: string;
+  
   @Column({ name: 'package_id', type: 'bigint' })
   packageId: string;
 
@@ -34,8 +37,7 @@ export class CourseTimeRule {
   @JoinColumn({ name: 'package_id' })
   package: CoursePackage;
 
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
+  
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

@@ -4,15 +4,13 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FamilyMember } from '../family/entities/family-member.entity';
-import { FamilyGroup } from '../family/entities/family-group.entity';
+import { FamilyModule } from '../family/family.module';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FamilyMember, FamilyGroup]),
+    FamilyModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

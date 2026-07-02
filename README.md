@@ -1,98 +1,291 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 微信教育管理系统
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+基于 NestJS + TypeORM + MySQL 的微信教育管理系统，提供家庭组、儿童账户、课程包、课程日志和微信订阅通知等功能。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 技术栈
 
-## Description
+- **框架**: NestJS 10.x
+- **语言**: TypeScript
+- **数据库**: MySQL (TypeORM)
+- **认证**: JWT (jsonwebtoken + passport-jwt)
+- **文档**: Swagger
+- **分页**: nestjs-paginate
+- **包管理**: pnpm
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 目录结构
 
-## Project setup
-
-```bash
-$ pnpm install
+```
+src/
+├── main.ts                    # 应用入口
+├── app.module.ts              # 根模块（全局 JWT 守卫）
+├── config/                    # 配置模块
+├── database/                  # 数据库模块
+├── common/                    # 共享代码
+│   ├── dao/
+│   │   └── base.dao.ts      # DAO 基类
+│   ├── decorators/
+│   │   └── public.decorator.ts # @Public() 装饰器
+│   └── entities/
+│       └── base.entity.ts    # 实体基类
+└── modules/                   # 业务模块
+    ├── auth/                 # JWT 认证模块
+    ├── family/               # 家庭组与成员
+    ├── child/                # 儿童账户
+    ├── course/               # 课程包与时间规则
+    ├── lesson-log/           # 课程变更日志
+    └── notification/        # 微信订阅通知
 ```
 
-## Compile and run the project
+## 安装和运行
 
 ```bash
-# development
-$ pnpm run start
+# 安装依赖
+pnpm install
 
-# watch mode
-$ pnpm run start:dev
+# 开发模式（热重载）
+pnpm run start:dev
 
-# production mode
-$ pnpm run start:prod
+# 构建
+pnpm run build
+
+# 生产模式
+pnpm run start:prod
+
+# 代码检查
+pnpm run lint
+
+# 代码格式化
+pnpm run format
 ```
 
-## Run tests
+## 环境变量
+
+在 `.env` 文件中配置：
 
 ```bash
-# unit tests
-$ pnpm run test
+# 服务端口
+APP_PORT=3000
 
-# e2e tests
-$ pnpm run test:e2e
+# JWT 配置
+JWT_ACCESS_SECRET=your_access_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+JWT_ACCESS_EXPIRATION=15m
+JWT_REFRESH_EXPIRATION=7d
 
-# test coverage
-$ pnpm run test:cov
+# MySQL 数据库
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=
+DB_DATABASE=wx_nest
+DB_SYNCHRONIZE=true
+DB_LOGGING=true
+DB_TIMEZONE=+08:00
+
+# Swagger
+SWAGGER_ENABLED=true
+
+# 日志级别
+LOG_LEVEL=log
 ```
 
-## Deployment
+## 架构设计
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 分层架构
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```
+Controller  →  Service  →  Dao  →  TypeORM Repository
+   ↓            ↓           ↓
+ DTO验证    业务逻辑    数据访问
+```
+
+**各层职责：**
+
+| 层级 | 职责 | 说明 |
+|------|------|------|
+| **Controller** | 路由控制 | 接收请求、参数验证、返回响应 |
+| **Service** | 业务逻辑 | 业务处理、异常转换、DTO 转换 |
+| **Dao** | 数据访问 | 数据库操作、分页查询 |
+| **Entity** | 数据模型 | TypeORM 实体定义 |
+
+### BaseDao
+
+所有 DAO 继承自 `BaseDao<T>`，提供通用 CRUD 方法：
+
+```typescript
+// src/common/dao/base.dao.ts
+export abstract class BaseDao<T> {
+  create(data): Promise<T>
+  findOne(id): Promise<T | null>
+  findMany(filter?): Promise<T[]>
+  update(id, data): Promise<T | null>
+  delete(id): Promise<void>
+  paginate(query): Promise<Paginated<T>>
+}
+```
+
+### 模块示例
+
+```typescript
+// 目录结构
+modules/
+  child/
+    ├── child.controller.ts    # 路由
+    ├── services/
+    │   └── child.service.ts  # 业务逻辑
+    ├── dao/
+    │   └── child-account.dao.ts  # 数据访问
+    ├── entities/
+    │   └── child-account.entity.ts  # 实体
+    ├── dto/
+    │   └── child-account.dto.ts  # DTO
+    └── child.module.ts        # 模块定义
+```
+
+## JWT 认证
+
+### 认证流程
+
+```
+1. 用户请求 /auth/login (携带 wx-openid)
+   ↓
+2. 后端查询/创建用户，返回 accessToken + refreshToken + member
+   ↓
+3. 前端存储 token，后续请求携带 Authorization: Bearer {accessToken}
+   ↓
+4. accessToken 过期时，使用 refreshToken 获取新 token
+   ↓
+5. refreshToken 无效时，重新登录
+```
+
+### 认证接口
+
+| 接口 | 方法 | 说明 | 认证 |
+|------|------|------|------|
+| `/auth/login` | POST | 登录/注册 | ❌ 公开 |
+| `/auth/refresh` | POST | 刷新 Token | ❌ 公开 |
+| `/auth/logout` | POST | 登出 | ✅ 需要 |
+
+### 请求示例
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# 登录
+curl -X POST http://localhost:3000/auth/login \
+  -H "wx-openid: wx_abc123"
+
+# 响应
+{
+  "accessToken": "eyJhbG...",
+  "refreshToken": "eyJhbG...",
+  "member": {
+    "id": "123",
+    "groupId": null,
+    "openId": "wx_abc123",
+    "nickname": "用户123",
+    "avatarUrl": "",
+    "role": 1,
+    "joinTime": "2026-07-02T..."
+  }
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 保护接口
 
-## Resources
+**全局认证（默认所有接口需要登录）：**
 
-Check out a few resources that may come in handy when working with NestJS:
+```typescript
+import { Public } from '@/common/decorators/public.decorator';
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+@Controller('user')
+export class UserController {
+  // 公开接口
+  @Public()
+  @Post('register')
+  register() { }
 
-## Support
+  // 需要认证的接口
+  @Get('profile')
+  getProfile(@Req() req) {
+    return req.user;  // 当前用户信息
+  }
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**前端请求：**
 
-## Stay in touch
+```typescript
+// 携带 token
+api.get('/user/profile', {
+  headers: {
+    'Authorization': `Bearer ${accessToken}`
+  }
+});
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Token 处理建议
 
-## License
+```typescript
+// axios 拦截器示例
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+// 401 自动刷新
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true;
+      const { data } = await api.post('/auth/refresh', {
+        refreshToken: localStorage.getItem('refresh_token')
+      });
+      localStorage.setItem('access_token', data.accessToken);
+      error.config.headers.Authorization = `Bearer ${data.accessToken}`;
+      return api(error.config);
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+## API 文档
+
+启动服务后访问 Swagger 文档：
+
+```
+http://localhost:3000/api-docs
+```
+
+Swagger 支持：
+- 在线测试接口
+- Bearer Token 认证（右上角 Authorize 按钮）
+- 接口参数说明
+
+## 分页查询
+
+使用 `nestjs-paginate` 进行分页：
+
+```bash
+# 分页参数
+GET /child?page=1&limit=10&sortBy=createdAt:DESC
+
+# 响应
+{
+  "data": [...],
+  "meta": {
+    "itemsPerPage": 10,
+    "totalItems": 100,
+    "currentPage": 1,
+    "totalPages": 10
+  },
+  "links": {...}
+}
+```
+
+## 许可证
+
+MIT
