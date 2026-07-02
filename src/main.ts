@@ -1,5 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -51,7 +55,9 @@ async function bootstrap() {
   logger.log(`Username: ${process.env.DB_USERNAME ?? 'root'}`);
   logger.log(`Password: ${process.env.DB_PASSWORD ?? '(空)'}`);
   logger.log(`Database: ${process.env.DB_DATABASE ?? 'wx_nest'}`);
-  logger.log(`Synchronize: ${process.env.DB_SYNCHRONIZE === 'true' ? '是' : '否'}`);
+  logger.log(
+    `Synchronize: ${process.env.DB_SYNCHRONIZE === 'true' ? '是' : '否'}`,
+  );
   logger.log(`日志级别: ${logLevel}`);
   logger.log('========================');
 
