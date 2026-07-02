@@ -18,7 +18,7 @@ import { FamilyGroup } from './family-group.entity';
 export class FamilyMember {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
-  
+
   @Index({ unique: true })
   @Column({ name: 'open_id', length: 64 })
   openId: string;
@@ -41,7 +41,12 @@ export class FamilyMember {
   @Column({ name: 'join_time', type: 'datetime' })
   joinTime: Date;
 
-  @Column({ name: 'refresh_token', type: 'varchar', length: 512, nullable: true })
+  @Column({
+    name: 'refresh_token',
+    type: 'varchar',
+    length: 512,
+    nullable: true,
+  })
   refreshToken: string | null;
 
   @Column({ name: 'token_expires_at', type: 'datetime', nullable: true })
@@ -56,7 +61,6 @@ export class FamilyMember {
 
   @OneToMany(() => ClassChangeLog, (log) => log.operator)
   changeLogs: ClassChangeLog[];
-
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

@@ -15,7 +15,7 @@ import { FamilyGroup } from '@/modules/family/entities/family-group.entity';
 export class ChildAccount {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
-  
+
   @Column({ name: 'group_id', type: 'bigint' })
   groupId: string;
 
@@ -31,8 +31,6 @@ export class ChildAccount {
 
   @OneToMany(() => CoursePackage, (pkg) => pkg.child)
   coursePackages: CoursePackage[];
-
-  
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

@@ -21,11 +21,15 @@ export class CourseService {
     return this.toPackageDto(entity as CoursePackage);
   }
 
-  async findAllPackages(query: PaginateQuery): Promise<Paginated<CoursePackageDto>> {
+  async findAllPackages(
+    query: PaginateQuery,
+  ): Promise<Paginated<CoursePackageDto>> {
     const result = await this.coursePackageDao.paginate(query);
     return {
       ...result,
-      data: result.data.map((entity) => this.toPackageDto(entity as CoursePackage)),
+      data: result.data.map((entity) =>
+        this.toPackageDto(entity as CoursePackage),
+      ),
     } as Paginated<CoursePackageDto>;
   }
 
@@ -37,7 +41,10 @@ export class CourseService {
     return this.toPackageDto(entity as CoursePackage);
   }
 
-  async updatePackage(id: string, dto: UpdateCourseDto): Promise<CoursePackageDto> {
+  async updatePackage(
+    id: string,
+    dto: UpdateCourseDto,
+  ): Promise<CoursePackageDto> {
     const entity = await this.coursePackageDao.update(id, dto);
     if (!entity) {
       throw new NotFoundException(`CoursePackage ${id} not found`);
@@ -74,7 +81,10 @@ export class CourseService {
     return this.toTimeRuleDto(entity as CourseTimeRule);
   }
 
-  async updateTimeRule(id: string, dto: UpdateCourseDto): Promise<CourseTimeRuleDto> {
+  async updateTimeRule(
+    id: string,
+    dto: UpdateCourseDto,
+  ): Promise<CourseTimeRuleDto> {
     const entity = await this.courseTimeRuleDao.update(id, dto);
     if (!entity) {
       throw new NotFoundException(`CourseTimeRule ${id} not found`);

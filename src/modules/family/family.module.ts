@@ -9,11 +9,7 @@ import { FamilyController } from './family.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FamilyGroup, FamilyMember])],
-  providers: [
-    FamilyGroupDao,
-    FamilyMemberDao,
-    FamilyService,
-  ],
+  providers: [FamilyGroupDao, FamilyMemberDao, FamilyService],
   controllers: [FamilyController],
   exports: [FamilyService],
 })

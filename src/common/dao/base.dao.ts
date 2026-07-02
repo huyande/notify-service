@@ -1,4 +1,9 @@
-import { Repository, DeepPartial, FindOptionsWhere, ObjectLiteral } from 'typeorm';
+import {
+  Repository,
+  DeepPartial,
+  FindOptionsWhere,
+  ObjectLiteral,
+} from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { PaginateQuery, Paginated, paginate } from 'nestjs-paginate';
 
@@ -29,9 +34,13 @@ export abstract class BaseDao<T extends ObjectLiteral> {
   }
 
   paginate(query: PaginateQuery): Promise<Paginated<T>> {
-    return paginate(query, this.repository as any, {
-      sortableColumns: ['id', 'createdAt', 'updatedAt'],
-      defaultSortBy: [['id', 'DESC']],
-    } as any) as Promise<Paginated<T>>;
+    return paginate(
+      query,
+      this.repository as any,
+      {
+        sortableColumns: ['id', 'createdAt', 'updatedAt'],
+        defaultSortBy: [['id', 'DESC']],
+      } as any,
+    ) as Promise<Paginated<T>>;
   }
 }

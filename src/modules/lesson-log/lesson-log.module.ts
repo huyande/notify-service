@@ -7,10 +7,7 @@ import { LessonLogController } from './lesson-log.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ClassChangeLog])],
-  providers: [
-    ClassChangeLogDao,
-    LessonLogService,
-  ],
+  providers: [ClassChangeLogDao, LessonLogService],
   controllers: [LessonLogController],
   exports: [LessonLogService],
 })
