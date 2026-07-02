@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   // 从环境变量获取日志级别，默认 'log'
@@ -30,6 +30,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: enabledLevels,
   });
+
+  // 启用全局序列化：让 DTO 上的 @Exclude() 等装饰器在响应时生效
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const logger = new Logger('Bootstrap');
 
