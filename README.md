@@ -58,7 +58,51 @@ REDIS_PORT=6379
 REDIS_PASSWORD=
 ```
 
-> 多小程序的 `appid`/`secret` 配置方案待定，见 `docs/proposals/`。
+> 多小程序的 `appid`/`secret`/模板/回调配置在 `config/apps.yaml`（静态配置，改后重启生效），设计见 `docs/proposals/`。
+
+## 队列管理界面
+
+项目集成了只读 Bull Board，入口由邮箱+密码登录页保护，无需单独的启停开关。启用步骤：
+
+1. 配置登录账户（环境变量或 `.env`）：`BULL_BOARD_ACCOUNTS=admin@example.com:your-password`（多账户用逗号分隔；密码不得包含逗号或冒号）。
+2. 配置会话密钥：`BULL_BOARD_SESSION_SECRET=<长随机串>`（缺失会导致启动失败）。
+3. 启动后访问 `http://localhost:3000/admin/queues`，会跳转到登录页；登录后会话有效期 12 小时。
+
+说明：
+
+- `BULL_BOARD_PATH` 可自定义面板路径（默认 `/admin/queues`）。
+- 未配置 `BULL_BOARD_ACCOUNTS` 时面板挂载但无人能登录，等效关闭；登录页会提示未配置账户。
+- 面板为只读（禁用重试、删除、暂停）；账户密码明文存于环境变量，请通过密钥管理或部署平台注入，勿提交到仓库。
+
+## 推送接口
+
+`POST /push/send`（幂等）：
+
+```bash
+curl -X POST http://localhost:3000/push/send \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "requestId": "uuid-1",
+    "appId": "wx1234567890abcdef",
+    "templateId": "tpl_demo",
+    "openid": "oXXXX",
+    "data": { "title": "课程提醒", "time": "2026-10-26 19:00" },
+    "callbackUrl": "https://partner.example.com/notify/callback"
+  }'
+```
+
+接口返回 `202` 并异步入队；推送到达终态（`sent`/`refused`/`failed`/`exhausted`）后以 fire-and-forget 方式回调 `callbackUrl`（未传则用 `config/apps.yaml` 中该小程序的回调地址）。
+
+## 容器部署
+
+部署机上准备 `.env.production`（模板见仓库根 `.env.production`，已被 git 忽略；Redis 在宿主机时 `REDIS_HOST=host.docker.internal`），然后：
+
+```bash
+./build.sh      # 拉代码 → 构建镜像 → 重建容器（保留最近 3 个历史镜像）
+./rollback.sh   # 交互式选择历史镜像回滚（也可 ./rollback.sh <tag>）
+```
+
+容器固定监听 3000，对外端口由脚本 `-p` 映射（默认 3000）；`config/apps.yaml` 与 `.env.production` 均打入镜像，改配置需重新构建。
 
 ## 相关文档
 

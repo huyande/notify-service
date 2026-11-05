@@ -6,7 +6,7 @@
 
 只负责微信小程序订阅消息推送的独立服务：接收各小程序推送请求，经 BullMQ（Redis）队列可靠投递订阅消息。
 
-> 注意：当前 `src/` 仍残留旧「微信教育管理系统」代码（`family` / `child` / `course` 等模块），与本服务定位无关，属待清理的遗留物。新代码一律按下方目标架构落位，不要沿用旧模块；旧的 `.plans/` 与 `plans/` 目录同理，已由 `docs/` 取代。
+> 旧「微信教育管理系统」遗留代码（`family` / `child` / `course` 等）与旧 `.plans/`、`plans/` 已清理；新代码按下方模块落位，`docs/` 为唯一上下文目录。
 
 ## 技术框架与实现方式
 
@@ -17,6 +17,9 @@
   - `queue`：BullMQ 队列/Worker 装配，重试 / 退避 / 死信策略。
   - `wechat`：`access_token` 获取与缓存、订阅消息 `subscribe/send` 调用。
   - `app`：多小程序 `appid`/`secret` 的注册与隔离。
+  - `strategy`：业务策略，按 `templateId` 路由，把业务 `data` 组装为微信模板字段。
+  - `callback`：推送终态回调（fire-and-forget）。
+  - `redis`：共享 Redis 连接（token 缓存）。
 
 ### 关键设计决策
 
@@ -24,6 +27,10 @@
 - **可靠投递**：`requestId` 幂等去重（同一次推送不重复发）；失败指数退避重试，超限进死信。
 - **限流**：微信订阅消息接口有频率上限，Worker 用并发/频率控制而非无脑并发。
 - **可观测**：每次推送的结构化日志带 `requestId`、`appid`、`openid`、结果、耗时。
+
+## 项目级 Skill
+
+- `create-strategy`（`.agents/skills/create-strategy/SKILL.md`）：新增模板消息 / 业务推送策略时，校验输入、生成策略并注册、更新 `config/apps.yaml`、输出调用方数据结构。
 
 ## 上下文工程
 

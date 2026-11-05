@@ -1,0 +1,21 @@
+# 依赖与构建产物（镜像内重新安装/编译）
+node_modules
+dist
+coverage
+.pnpm-store
+
+# 版本库与本地开发文件
+.git
+.gitignore
+.env
+.env.development
+.env.example
+
+# 文档与脚本自身无需进镜像
+docs
+README.md
+AGENTS.md
+build.sh
+rollback.sh
+Dockerfile
+.dockerignore

@@ -1,0 +1,21 @@
+# 多小程序静态配置（账户 / 模板 / 回调）
+# 修改后重启服务生效。生产环境的 secret 建议通过环境变量或密钥管理注入，勿提交真实值。
+apps:
+  # 示例账户（仅用于本地演示，secret 为占位值）
+  - appId: wx1234567890abcdef
+    name: 示例小程序
+    secret: replace-with-real-appsecret
+    callback:
+      url: https://partner.example.com/notify/callback
+    templates:
+      - templateId: tpl_demo
+        fields: [thing1, time2]
+
+  # 课时记录 
+  - appId: wx1ab5ceabc337ef6c
+    name: 课时记录
+    secret: "${WECHAT_APP_SECRET_COURSE}"
+    templates:
+      # 上课提醒
+      - templateId: FgPoaf3IGz6HmzZlFzT34fQux7bNOwdMqF4sQHnIPpA
+        fields: [thing17, time15, thing4, name1]
