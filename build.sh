@@ -10,7 +10,7 @@ readonly IMAGE_REPOSITORY="notify-service"
 # 保留的历史镜像数量（不含本次构建的镜像），用于快速回滚
 readonly KEEP_HISTORY_IMAGES=3
 # 容器对外端口（与应用 APP_PORT 保持一致）
-readonly APP_PORT=3000
+readonly APP_PORT=3001
 
 # 生成镜像标签：日期 + 2 位随机字符串，例如 20261105-3f
 generate_image_tag() {
